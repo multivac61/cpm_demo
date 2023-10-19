@@ -4,12 +4,13 @@ name: Linux
 on:
   push:
     branches:
-      - master
+      - main
       - develop
   pull_request:
     branches:
-      - master
+      - main
       - develop
+  workflow_dispatch:
 
 env:
   CTEST_OUTPUT_ON_FAILURE: 1
