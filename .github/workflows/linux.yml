@@ -24,7 +24,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/cache@v3
+      - name: Caching CPM CMake dependencies
+        uses: actions/cache@v3
         with:
           path: '**/cpm_modules'
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
@@ -39,8 +40,13 @@ jobs:
               libwebkit2gtk-4.0-dev \
               libglu1-mesa-dev mesa-common-dev
 
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ github.job }}-${{ runner.os }} # Eg. "some_build-ubuntu-latest"
+
       - name: configure
-        run: cmake -S . -B build -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO
+        run: cmake -S . -B build -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
       - name: build
         run: cmake --build build -j4
