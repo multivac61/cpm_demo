@@ -1,0 +1,31 @@
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+CMakeScripts/
+cmake_install.cmake
+install_manifest.txt
+
+# Compiled binaries/libraries
+*.out
+*.dll
+*.exe
+*.lib
+*.so
+*.dylib
+
+# Compiler generated files
+build/
+Makefile
+CMakeLists.txt.user*
+CMakeCache.txt*
+
+# IDE-specific files (optional, based on your preferred IDE)
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Dependency directories (specific to your project)
+/vendor/
+/lib/
+/include/
