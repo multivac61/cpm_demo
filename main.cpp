@@ -1,5 +1,6 @@
 #include <boost/ut.hpp>
 #include <fmt/format.h>
+#include <juce_core/juce_core.h>
 #include <numeric>
 #include <range/v3/numeric/accumulate.hpp>
 #include <range/v3/view/iota.hpp>
@@ -29,5 +30,11 @@ int main() {
                              views::take(10),
                          0);
     expect(sum == 385);
+  };
+
+  "juce"_test = [] {
+    using namespace juce;
+    const juce::String s = "hello";
+    expect(s.toStdString() == "hello");
   };
 }
