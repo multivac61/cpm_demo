@@ -16,4 +16,6 @@ CPMAddPackage("gh:juce-framework/JUCE#7.0.8")
 
 # link dependencies
 target_link_libraries(main PUBLIC fmt::fmt Boost::ut range-v3 juce::juce_core juce::juce_recommended_config_flags juce::juce_recommended_lto_flags juce::juce_recommended_warning_flags)
-target_link_options(main PUBLIC -Wl,-weak_reference_mismatches,weak)
+
+
+target_link_options(main PUBLIC $<$<CXX_COMPILER_ID:AppleClang>:-Wl,-weak_reference_mismatches,weak>)
