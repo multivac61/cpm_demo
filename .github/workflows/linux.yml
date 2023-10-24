@@ -14,7 +14,12 @@ on:
 
 env:
   CTEST_OUTPUT_ON_FAILURE: 1
-  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  CCACHE_VERSION: 4.8.3
+  CCACHE_BASEDIR: ${GITHUB_WORKSPACE}
+  CCACHE_DIR: ${GITHUB_WORKSPACE}/.ccache
+  CCACHE_COMPRESS: true
+  CCACHE_COMPRESSLEVEL: 6
+  CCACHE_MAXSIZE: 1000M
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
 
 jobs:
@@ -23,6 +28,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Download ccache
+        id: ccache
+        shell: cmake -P {0}
+        run: |
+          set(ccache_url "https://github.com/ccache/ccache/releases/download/v$ENV{CCACHE_VERSION}/ccache-$ENV{CCACHE_VERSION}-linux-x86_64.tar.xz")
+          file(DOWNLOAD "${ccache_url}" ./ccache.tar.xz SHOW_PROGRESS)
+          execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./ccache.tar.xz)
+
+      - name: Add ccache to PATH
+        run: echo "$(pwd)" >> $GITHUB_PATH
 
       - name: Caching CPM CMake dependencies
         uses: actions/cache@v3
@@ -40,14 +56,24 @@ jobs:
               libwebkit2gtk-4.0-dev \
               libglu1-mesa-dev mesa-common-dev
 
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+      - name: Prepare ccache timestamp
+        id: ccache_cache_timestamp
+        shell: cmake -P {0}
+        run: |
+          string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
+          message("::set-output name=timestamp::${current_date}")
+    
+      - name: ccache cache files
+        id: ccache_cache
+        uses: actions/cache@v3
         with:
-          key: ${{ github.job }}-${{ runner.os }} # Eg. "some_build-ubuntu-latest"
+          path: .ccache
+          key: ${ { runner.os } }-ccache-${ { steps.ccache_cache_timestamp.outputs.timestamp } }
+          restore-keys: |
+            ${ { runner.os } }-ccache-
 
       - name: configure
-        run: cmake -S . -B build -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_VERBOSE_MAKEFILE=1
-
+        run: cmake -S . -B build -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
       - name: build
         run: cmake --build build -j4
 
