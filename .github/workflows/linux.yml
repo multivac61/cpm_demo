@@ -33,7 +33,7 @@ jobs:
         id: ccache
         shell: cmake -P {0}
         run: |
-          set(ccache_url "https://github.com/ccache/ccache/releases/download/v$ENV{CCACHE_VERSION}/ccache-$ENV{CCACHE_VERSION}-linux-x86_64.tar.xz")
+          set(ccache_url "https://github.com/ccache/ccache/releases/download/v${{ env.CCACHE_VERSION }}/ccache-${{ env.CCACHE_VERSION }}-linux-x86_64.tar.xz")
           file(DOWNLOAD "${ccache_url}" ./ccache.tar.xz SHOW_PROGRESS)
           execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./ccache.tar.xz)
 
