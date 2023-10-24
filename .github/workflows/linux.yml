@@ -29,17 +29,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Download ccache
-        id: ccache
-        shell: cmake -P {0}
-        run: |
-          set(ccache_url "https://github.com/ccache/ccache/releases/download/v${{ env.CCACHE_VERSION }}/ccache-${{ env.CCACHE_VERSION }}-linux-x86_64.tar.xz")
-          file(DOWNLOAD "${ccache_url}" ./ccache.tar.xz SHOW_PROGRESS)
-          execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./ccache.tar.xz)
-
-      - name: Add ccache to PATH
-        run: echo "$(pwd)" >> $GITHUB_PATH
-
       - name: Caching CPM CMake dependencies
         uses: actions/cache@v3
         with:
@@ -54,7 +43,8 @@ jobs:
               libfreetype6-dev \
               libx11-dev libxcomposite-dev libxcursor-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev \
               libwebkit2gtk-4.0-dev \
-              libglu1-mesa-dev mesa-common-dev
+              libglu1-mesa-dev mesa-common-dev \
+              ccache
 
       - name: Prepare ccache timestamp
         id: ccache_cache_timestamp
