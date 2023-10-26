@@ -76,4 +76,5 @@ jobs:
 
       - name: test
         run: |
-          cmake --build build --target test
+          cd build
+          ctest --build-config Debug
