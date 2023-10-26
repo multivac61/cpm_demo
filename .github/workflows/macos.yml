@@ -14,6 +14,12 @@ on:
 
 env:
   CTEST_OUTPUT_ON_FAILURE: 1
+  CCACHE_VERSION: 4.8.3
+  CCACHE_BASEDIR: ${{ github.workspace }}
+  CCACHE_DIR: ${{ github.workspace }}/.ccache
+  CCACHE_COMPRESS: true
+  CCACHE_COMPRESSLEVEL: 6
+  CCACHE_MAXSIZE: 1000M
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
 
 jobs:
@@ -23,36 +29,42 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/cache@v3
+      - name: Caching CPM CMake dependencies
+        uses: tespkg/actions-cache@v1
         with:
           path: '**/cpm_modules'
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
+          bucket: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          endpoint: ${{ secrets.AWS_ENDPOINT }}
 
       - name: Install ninja and python
-        shell: bash
-        run: brew install llvm clang-format ninja python
+        run: brew install llvm ninja ccache
 
-      - name: Install builddriver
-        shell: bash
-        run: pip3 install builddriver cmake_format==0.6.11 pyyaml
+      - name: ccache cache files
+        uses: tespkg/actions-cache@v1
+        with:
+          path: .ccache
+          key: ${{ runner.os }}-ccache-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-ccache-
+          bucket: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          endpoint: ${{ secrets.AWS_ENDPOINT }}
+
+      - name: Show ccache stats
+        run: |
+          ccache -s -v
 
       - name: configure
-        shell: bash
         run: |
-          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          cmake -B build -G Ninja -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
       - name: build
-        run: cmake --build build -j4
-
-      - name: test
-        shell: bash
         run: |
-          cd build
-          ctest --build-config Debug
+          cmake --build build
 
-      - name: Run clang-tidy
-        shell: bash
+      - name: Test
         run: |
-          export PATH=$(brew --prefix llvm)/bin:${PATH}
-          $(brew --prefix llvm)/bin/run-clang-tidy -p build test 2>&1 | tee .run-clang-tidy.log
-          builddriver cat .run-clang-tidy.log
+          ctest --test-dir build

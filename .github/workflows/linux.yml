@@ -52,7 +52,6 @@ jobs:
               ninja-build
 
       - name: ccache cache files
-        id: ccache_cache
         uses: tespkg/actions-cache@v1
         with:
           path: .ccache
