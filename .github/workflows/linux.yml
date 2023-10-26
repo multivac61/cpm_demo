@@ -34,9 +34,10 @@ jobs:
         with:
           path: '**/cpm_modules'
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
-          aws-s3-bucket: ${{ secrets.AWS_S3_BUCKET_NAME }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          bucket: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          endpoint: ${{ secrets.AWS_ENDPOINT }}
 
       - name: Update dependencies for JUCE
         run: |
@@ -64,9 +65,10 @@ jobs:
           key: ${ { runner.os } }-ccache-${ { steps.ccache_cache_timestamp.outputs.timestamp } }
           restore-keys: |
             ${ { runner.os } }-ccache-
-          aws-s3-bucket: ${{ secrets.AWS_S3_BUCKET_NAME }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          bucket: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          endpoint: ${{ secrets.AWS_ENDPOINT }}
 
       - name: configure
         run: cmake -S . -B build -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
