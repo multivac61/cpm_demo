@@ -20,6 +20,15 @@ env:
   CCACHE_COMPRESS: true
   CCACHE_COMPRESSLEVEL: 6
   CCACHE_MAXSIZE: 1000M
+  SCCACHE_BUCKET: ${{ secrets.AWS_S3_BUCKET_NAME }}
+  SCCACHE_REGION: auto
+  SCCACHE_GHA_ENABLED: true
+  SCCACHE_CACHE_TYPE: S3
+  SCCACHE_LOG: debug
+  SCCACHE_NO_DAEMON: 1
+  SCCACHE_ENDPOINT: https://${{ secrets.AWS_ENDPOINT }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
 
 jobs:
@@ -49,26 +58,21 @@ jobs:
               libwebkit2gtk-4.0-dev \
               libglu1-mesa-dev mesa-common-dev \
               ccache \
-              ninja-build
+              ninja-build \
+              sccache \
+              cargo
 
-      - name: ccache cache files
-        uses: tespkg/actions-cache@v1
-        with:
-          path: .ccache
-          key: ${{ runner.os }}-ccache-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-ccache-
-          bucket: ${{ secrets.AWS_S3_BUCKET_NAME }}
-          accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          endpoint: ${{ secrets.AWS_ENDPOINT }}
-
-      - name: Show ccache stats
+      - name: Install sccache
         run: |
-          ccache -s -v
+          cargo install sccache --locked
+
+      - name: Show sccache stats
+        run: |
+          sccache -s -v
 
       - name: Configure
         run: |
-          cmake -B build -G Ninja -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          cmake -B build -G Ninja -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
 
       - name: Build
         run: |
