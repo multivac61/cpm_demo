@@ -65,7 +65,7 @@ jobs:
 
       - name: Show ccache stats
         run: |
-          ccache -s
+          ccache -s -v
 
       - name: Configure
         run: |
