@@ -15,11 +15,12 @@ on:
 env:
   CTEST_OUTPUT_ON_FAILURE: 1
   SCCACHE_BUCKET: ${{ secrets.AWS_S3_BUCKET_NAME }}
-  SCCACHE_ENDPOINT: https://${{ secrets.AWS_ENDPOINT }}
   SCCACHE_REGION: auto
   SCCACHE_GHA_ENABLED: true
+  SCCACHE_CACHE_TYPE: S3
   SCCACHE_LOG: debug
   SCCACHE_NO_DAEMON: 1
+  SCCACHE_ENDPOINT: https://${{ secrets.AWS_ENDPOINT }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
