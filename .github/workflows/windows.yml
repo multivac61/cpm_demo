@@ -18,6 +18,10 @@ env:
   SCCACHE_ENDPOINT: https://${{ secrets.AWS_ENDPOINT }}
   SCCACHE_REGION: auto
   SCCACHE_GHA_ENABLED: true
+  SCCACHE_LOG: debug
+  SCCACHE_NO_DAEMON: 1
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
 
 jobs:
@@ -49,10 +53,10 @@ jobs:
 
       - name: configure
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DBOOST_UT_DISABLE_MODULE=ON -G "Visual Studio 17 2022" -T ${{matrix.toolset}} -DCMAKE_CXX_STANDARD:STRING=${{matrix.std}} -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+          cmake -B build -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DBOOST_UT_DISABLE_MODULE=ON -G "Visual Studio 17 2022" -T ${{matrix.toolset}} -DCMAKE_CXX_STANDARD:STRING=${{matrix.std}} -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
 
       - name: build
-        run: cmake --build build --config Debug -j4
+        run: cmake --build build
 
       - name: Test
         run: |
