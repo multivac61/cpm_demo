@@ -58,16 +58,10 @@ jobs:
               libwebkit2gtk-4.0-dev \
               libglu1-mesa-dev mesa-common-dev \
               ccache \
-              ninja-build \
-              cargo
+              ninja-build
 
-      - name: Install sccache
-        run: |
-          cargo install sccache --locked
-
-      - name: Show sccache stats
-        run: |
-          sccache -s -v
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.3
 
       - name: Configure
         run: |
@@ -80,3 +74,7 @@ jobs:
       - name: Test
         run: |
           ctest --test-dir build
+
+      - name: Show sccache stats
+        run: |
+          sccache -s -v
