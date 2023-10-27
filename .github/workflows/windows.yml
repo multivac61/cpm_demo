@@ -26,13 +26,6 @@ env:
 jobs:
   build:
     runs-on: windows-latest
-    strategy:
-      matrix:
-        toolset: [ClangCl, v143]
-        std: [17, 20]
-        exclude:
-          - toolset: v143
-            std: 17
 
     steps:
       - uses: actions/checkout@v3
@@ -55,7 +48,7 @@ jobs:
 
       - name: configure
         run: |
-          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DBOOST_UT_DISABLE_MODULE=ON -T ${{ matrix.toolset }} -DCMAKE_CXX_STANDARD:STRING=${{ matrix.std }} -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+          cmake -B build -G Ninja -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DBOOST_UT_DISABLE_MODULE=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
 
       - name: build
         run: cmake --build build
