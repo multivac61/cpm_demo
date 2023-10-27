@@ -55,7 +55,7 @@ jobs:
 
       - name: configure
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DBOOST_UT_DISABLE_MODULE=ON -G "Visual Studio 17 2022" -T ${{ matrix.toolset }} -DCMAKE_CXX_STANDARD:STRING=${{ matrix.std }} -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DBOOST_UT_DISABLE_MODULE=ON -T ${{ matrix.toolset }} -DCMAKE_CXX_STANDARD:STRING=${{ matrix.std }} -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
 
       - name: build
         run: cmake --build build
