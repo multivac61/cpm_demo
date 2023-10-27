@@ -14,12 +14,7 @@ on:
 
 env:
   CTEST_OUTPUT_ON_FAILURE: 1
-  CCACHE_VERSION: 4.8.3
-  CCACHE_BASEDIR: ${{ github.workspace }}
-  CCACHE_DIR: ${{ github.workspace }}/.ccache
-  CCACHE_COMPRESS: true
-  CCACHE_COMPRESSLEVEL: 6
-  CCACHE_MAXSIZE: 1000M
+  SCCACHE_VERSION: 0.5.4
   SCCACHE_BUCKET: ${{ secrets.AWS_S3_BUCKET_NAME }}
   SCCACHE_REGION: auto
   SCCACHE_GHA_ENABLED: true
@@ -57,11 +52,13 @@ jobs:
               libx11-dev libxcomposite-dev libxcursor-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev \
               libwebkit2gtk-4.0-dev \
               libglu1-mesa-dev mesa-common-dev \
-              ccache \
               ninja-build
 
-      - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.3
+      - name: Install sccache
+        run: |
+          wget https://github.com/mozilla/sccache/releases/download/v${{ SCCACHE_VERSION }}/sccache-v${{ SCCACHE_VERSION }}-x86_64-unknown-linux-musl.tar.gz
+          tar -xvf sccache-v${{ SCCACHE_VERSION }}-x86_64-unknown-linux-musl.tar.gz
+          echo "$PWD/sccache-v${{ SCCACHE_VERSION }}-x86_64-unknown-linux-musl" >> $GITHUB_PATH
 
       - name: Configure
         run: |
@@ -77,4 +74,4 @@ jobs:
 
       - name: Show sccache stats
         run: |
-          sccache -s -v
+          sccache -s
