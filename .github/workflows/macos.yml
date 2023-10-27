@@ -54,7 +54,7 @@ jobs:
 
       - name: configure
         run: |
-          cmake -B build -G Ninja -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          cmake -B build -G Ninja -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
 
       - name: build
         run: |
@@ -64,6 +64,6 @@ jobs:
         run: |
           ctest --test-dir build
 
-      - name: Show ccache stats
+      - name: Show sccache stats
         run: |
-          ccache -s -v
+          sccache -s -v
