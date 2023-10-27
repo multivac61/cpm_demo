@@ -54,7 +54,9 @@ jobs:
           Add-Content $env:GITHUB_PATH "$PWD/ninja-win"
 
       - name: Setup MSVC on Windows
-        uses: ilammy/msvc-dev-cmd@v1
+        run: |
+          Invoke-WebRequest -URI https://aka.ms/vs/17/release/vs_BuildTools.exe -OutFile vs_BuildTools.exe
+          run ./vs_BuildTools.exe
 
       - name: configure
         run: |
