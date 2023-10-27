@@ -56,7 +56,7 @@ jobs:
       - name: Setup MSVC on Windows
         run: |
           Invoke-WebRequest -URI https://aka.ms/vs/17/release/vs_BuildTools.exe -OutFile vs_BuildTools.exe
-          run ./vs_BuildTools.exe
+          ./vs_BuildTools.exe
 
       - name: configure
         run: |
