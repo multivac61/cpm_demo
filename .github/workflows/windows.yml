@@ -43,8 +43,8 @@ jobs:
 
       - name: Download and install sccache
         run: |
-          Invoke-WebRequest -URI https://github.com/mozilla/sccache/releases/download/v${{ env.SCCACHE_VERSION }}/sccache-v${{ env.SCCACHE_VERSION }}-x86_64-pc-windows-msvc.zip
-          Expand-Archive sccache-v${{ env.SCCACHE_VERSION }}-x86_64-pc-windows-msvc.zip 
+          Invoke-WebRequest -URI https://github.com/mozilla/sccache/releases/download/v${{ env.SCCACHE_VERSION }}/sccache-v${{ env.SCCACHE_VERSION }}-x86_64-pc-windows-msvc.zip -OutFile sccache-v${{ env.SCCACHE_VERSION }}-x86_64-pc-windows-msvc.zip
+          Expand-Archive sccache-v${{ env.SCCACHE_VERSION }}-x86_64-pc-windows-msvc.zip
           Add-Content $env:GITHUB_PATH "$PWD/sccache-v${{ env.SCCACHE_VERSION }}-x86_64-pc-windows-msvc"
 
       - name: Download and install ninja-build
