@@ -49,12 +49,15 @@ jobs:
           secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           endpoint: ${{ secrets.AWS_ENDPOINT }}
 
-      - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.3
+      - name: Download and install sccache
+        run: |
+          Invoke-WebRequest -URI https://github.com/mozilla/sccache/releases/download/v0.5.4/sccache-v0.5.4-x86_64-pc-windows-msvc.zip -OutFile sccache.zip
+          Expand-Archive sccache.zip -DestinationPath $PWD
+          Add-Content $env:GITHUB_PATH "$PWD/sccache-v0.5.4-x86_64-pc-windows-msvc"
 
       - name: configure
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DBOOST_UT_DISABLE_MODULE=ON -G "Visual Studio 17 2022" -T ${{matrix.toolset}} -DCMAKE_CXX_STANDARD:STRING=${{matrix.std}} -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+          cmake -B build -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DBOOST_UT_DISABLE_MODULE=ON -G "Visual Studio 17 2022" -T ${{ matrix.toolset }} -DCMAKE_CXX_STANDARD:STRING=${{ matrix.std }} -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
 
       - name: build
         run: cmake --build build
