@@ -20,6 +20,7 @@ env:
   SCCACHE_CACHE_TYPE: S3
   SCCACHE_LOG: debug
   SCCACHE_NO_DAEMON: 1
+  SCCACHE_VERSION: 0.5.4
   SCCACHE_ENDPOINT: https://${{ secrets.AWS_ENDPOINT }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -51,9 +52,9 @@ jobs:
 
       - name: Download and install sccache
         run: |
-          Invoke-WebRequest -URI https://github.com/mozilla/sccache/releases/download/v0.5.4/sccache-v0.5.4-x86_64-pc-windows-msvc.zip -OutFile sccache.zip
+          Invoke-WebRequest -URI https://github.com/mozilla/sccache/releases/download/v${{ env.SCCACHE_VERSION }}/sccache-v${{ env.SCCACHE_VERSION }}-x86_64-pc-windows-msvc.zip -OutFile sccache.zip
           Expand-Archive sccache.zip -DestinationPath $PWD
-          Add-Content $env:GITHUB_PATH "$PWD/sccache-v0.5.4-x86_64-pc-windows-msvc"
+          Add-Content $env:GITHUB_PATH "$PWD/sccache-v${{ env.SCCACHE_VERSION }}-x86_64-pc-windows-msvc"
 
       - name: configure
         run: |
@@ -65,3 +66,7 @@ jobs:
       - name: Test
         run: |
           ctest --test-dir build -C Debug
+
+      - name: Show sccache stats
+        run: |
+          sccache -s
