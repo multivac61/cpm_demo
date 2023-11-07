@@ -29,3 +29,6 @@ CMakeCache.txt*
 /vendor/
 /lib/
 /include/
+
+# nix
+*result*
