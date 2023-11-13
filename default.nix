@@ -9,6 +9,8 @@
 , pkgs
 , ut ? pkgs.callPackage ./nix/ut.nix {}
 , juce
+, lld
+, darwin
 }:
 let
   cpm = fetchurl {
@@ -28,6 +30,8 @@ in
 stdenv.mkDerivation {
   pname = "cpm-demo";
   version = "unstable-2023-10-27";
+
+  NIX_CFLAGS_LINK = lib.optionalString stdenv.isDarwin "-fuse-ld=lld";
 
   src = ./.;
 
@@ -59,12 +63,12 @@ stdenv.mkDerivation {
     fmt
     ut
     myJuce
-  ];
+  ] ++ lib.optionals stdenv.isDarwin [ darwin.apple_sdk.frameworks.Cocoa ];
 
   nativeBuildInputs = [
     cmake
     pkg-config
-  ];
+  ] ++ lib.optionals stdenv.isDarwin [ lld ];
 
   meta = with lib; {
     description = "";
