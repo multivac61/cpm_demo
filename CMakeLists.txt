@@ -6,16 +6,10 @@ project(MyProject)
 # add executable
 add_executable(main main.cpp)
 
-# add dependencies
-include(cmake/CPM.cmake)
-
-CPMAddPackage("gh:fmtlib/fmt#7.1.3")
-CPMAddPackage("gh:boost-ext/ut@2.0.0")
-CPMAddPackage("gh:ericniebler/range-v3#0.12.0")
-CPMAddPackage(NAME JUCE
-  GITHUB_REPOSITORY "juce-framework/JUCE"
-  GIT_TAG 7.0.8
-  OPTIONS "JUCE_MODULES_ONLY ON") # Used in order to note have to build juceaide
+find_package(fmt)
+find_package(ut)
+find_package(range-v3)
+find_package(juce)
 
 # link dependencies
 target_link_libraries(main fmt::fmt Boost::ut range-v3 juce::juce_core juce::juce_recommended_config_flags juce::juce_recommended_lto_flags juce::juce_recommended_warning_flags)
