@@ -6,16 +6,17 @@
 
   outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" ];
+      systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
       perSystem = { config, self', inputs', pkgs, system, ... }:
-      {
-        packages.default = pkgs.callPackage ./default.nix (pkgs.lib.optionalAttrs (pkgs.stdenv.isDarwin) {
-          stdenv = pkgs.stdenvAdapters.overrideSDK pkgs.stdenv {
-            darwinMinVersion = "11.0";
-            darwinSdkVersion = "11.0";
-          };
-          ut = pkgs.callPackage ./nix/ut.nix { stdenv = pkgs.llvmPackages_16.stdenv; };
-        }) // {};
-      };
+        {
+          packages.default = pkgs.callPackage ./default.nix
+            (pkgs.lib.optionalAttrs (pkgs.stdenv.isDarwin) {
+              stdenv = pkgs.stdenvAdapters.overrideSDK pkgs.stdenv {
+                darwinMinVersion = "11.0";
+                darwinSdkVersion = "11.0";
+              };
+              ut = pkgs.callPackage ./nix/ut.nix { stdenv = pkgs.llvmPackages_16.stdenv; };
+            }) // { };
+        };
     };
 }
