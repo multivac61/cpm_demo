@@ -41,11 +41,8 @@ int main() {
   };
 
   "eigen"_test = [] {
-    Eigen::Matrix3d m;
-    // Let's make it a symmetric matrix
-    for (int i = 0; i < 3; i++)
-      for (int j = 0; j < 3; j++)
-        m(i, j) = (i + 1) * (1 + j);
+    Eigen::Matrix3f m;
+    m << 1, 2, 3, 4, 5, 6, 7, 8, 9;
 
     expect(eq(m(3, 3), 9));
   };
