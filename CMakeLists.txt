@@ -19,7 +19,6 @@ CPMAddPackage(NAME JUCE
 
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
-# link dependencies
 target_link_libraries(main fmt::fmt Boost::ut range-v3 juce::juce_core juce::juce_recommended_config_flags juce::juce_recommended_lto_flags juce::juce_recommended_warning_flags Eigen3::Eigen)
 
 target_compile_definitions(main PRIVATE JUCE_USE_CURL=0 JUCE_WEB_BROWSER=0)

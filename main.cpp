@@ -1,4 +1,6 @@
 #include <boost/ut.hpp>
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Dense>
 #include <fmt/format.h>
 #include <juce_core/juce_core.h>
 #include <numeric>
@@ -6,10 +8,6 @@
 #include <range/v3/view/iota.hpp>
 #include <range/v3/view/take.hpp>
 #include <range/v3/view/transform.hpp>
-
-#include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Dense>
-#include <iostream>
 
 constexpr auto sum(auto... values) { return (values + ...); }
 
