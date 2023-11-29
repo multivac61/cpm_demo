@@ -7,10 +7,11 @@
 , range-v3
 , fmt
 , pkgs
-, ut ? pkgs.callPackage ./nix/ut.nix {}
+, ut ? pkgs.callPackage ./nix/ut.nix { }
 , juce
 , lld
 , darwin
+, eigen
 }:
 let
   cpm = fetchurl {
@@ -59,6 +60,7 @@ stdenv.mkDerivation {
   ];
 
   buildInputs = [
+    eigen
     range-v3
     fmt
     ut

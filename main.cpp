@@ -7,6 +7,10 @@
 #include <range/v3/view/take.hpp>
 #include <range/v3/view/transform.hpp>
 
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Dense>
+#include <iostream>
+
 constexpr auto sum(auto... values) { return (values + ...); }
 
 int main() {
@@ -36,5 +40,15 @@ int main() {
     using namespace juce;
     const juce::String s = "hello";
     expect(s.toStdString() == "hello");
+  };
+
+  "eigen"_test = [] {
+    Eigen::Matrix3d m;
+    // Let's make it a symmetric matrix
+    for (int i = 0; i < 3; i++)
+      for (int j = 0; j < 3; j++)
+        m(i, j) = (i + 1) * (1 + j);
+
+    expect(eq(m(3, 3), 9));
   };
 }
