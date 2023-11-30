@@ -1,4 +1,4 @@
-name: Linux: Run NixOS Tests and other VMs on GitHub Actions.
+name: Linux. Run NixOS Tests and other VMs on GitHub Actions.
 on:
   pull_request:
   workflow_dispatch:
