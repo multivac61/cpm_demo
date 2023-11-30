@@ -1,11 +1,11 @@
 { lib
 , stdenv
-, fetchurl
 , cmake
 , fetchFromGitHub
 , pkg-config
 , range-v3
 , fmt
+, microsoft-gsl
 , pkgs
 , ut ? pkgs.callPackage ./nix/ut.nix {}
 , juce
@@ -13,10 +13,6 @@
 , darwin
 }:
 let
-  cpm = fetchurl {
-    url = "https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.38.6/CPM.cmake";
-    hash = "sha256-EcP6XxuhTxXTHC+2PbyGKO4TPYHI12TKrZqNueC6ywc=";
-  };
   myJuce = juce.overrideAttrs rec {
     version = "7.0.8";
     src = fetchFromGitHub {
@@ -35,11 +31,6 @@ stdenv.mkDerivation {
 
   src = ./.;
 
-  patchPhase = ''
-    mkdir -p build/cmake
-    cp -R --no-preserve=mode,ownership ${cpm} build/cmake/CPM_0.38.6.cmake
-  '';
-
   installPhase = ''
     mkdir -p $out/bin
     mv main $out/bin/main
@@ -53,14 +44,10 @@ stdenv.mkDerivation {
     runHook postCheck
   '';
 
-  cmakeFlags = [
-    "-DCPM_USE_LOCAL_PACKAGES=ON"
-    "-DCPM_LOCAL_PACKAGES_ONLY=ON"
-  ];
-
   buildInputs = [
     range-v3
     fmt
+    microsoft-gsl
     ut
     myJuce
   ] ++ lib.optionals stdenv.isDarwin [ darwin.apple_sdk.frameworks.Cocoa ];

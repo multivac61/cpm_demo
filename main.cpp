@@ -1,3 +1,5 @@
+#include <Eigen/Core>
+#include <Eigen/Dense>
 #include <boost/ut.hpp>
 #include <fmt/format.h>
 #include <juce_core/juce_core.h>

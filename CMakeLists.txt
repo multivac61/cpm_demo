@@ -1,24 +1,21 @@
 cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 
+set(CMAKE_CXX_STANDARD 20)
+
 # create project
-project(MyProject)
+project(cpm-demo)
 
 # add executable
 add_executable(main main.cpp)
 
-# add dependencies
-include(cmake/CPM.cmake)
+find_package(fmt REQUIRED CONFIG)
+find_package(range-v3 REQUIRED CONFIG)
+find_package(JUCE REQUIRED)
+find_package(Eigen3 3.3 REQUIRED CONFIG)
+find_package(Microsoft.GSL REQUIRED CONFIG)
+find_package(ut REQUIRED CONFIG)
 
-CPMAddPackage("gh:fmtlib/fmt#7.1.3")
-CPMAddPackage("gh:boost-ext/ut@2.0.0")
-CPMAddPackage("gh:ericniebler/range-v3#0.12.0")
-CPMAddPackage(NAME JUCE
-  GITHUB_REPOSITORY "juce-framework/JUCE"
-  GIT_TAG 7.0.8
-  OPTIONS "JUCE_MODULES_ONLY ON") # Used in order to note have to build juceaide
-
-# link dependencies
-target_link_libraries(main fmt::fmt Boost::ut range-v3 juce::juce_core juce::juce_recommended_config_flags juce::juce_recommended_lto_flags juce::juce_recommended_warning_flags)
+target_link_libraries(main fmt::fmt Boost::ut range-v3::range-v3 juce::juce_core juce::juce_recommended_config_flags juce::juce_recommended_lto_flags juce::juce_recommended_warning_flags Eigen3::Eigen Microsoft.GSL::GSL)
 
 target_compile_definitions(main PRIVATE JUCE_USE_CURL=0 JUCE_WEB_BROWSER=0)
 
