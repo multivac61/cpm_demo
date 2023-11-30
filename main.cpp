@@ -1,6 +1,8 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <boost/ut.hpp>
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Dense>
 #include <fmt/format.h>
 #include <juce_core/juce_core.h>
 #include <numeric>
@@ -38,5 +40,12 @@ int main() {
     using namespace juce;
     const juce::String s = "hello";
     expect(s.toStdString() == "hello");
+  };
+
+  "eigen"_test = [] {
+    Eigen::Matrix3i m;
+    m << 1, 2, 3, 4, 5, 6, 7, 8, 9;
+
+    expect(eq(m(3, 3), 9));
   };
 }

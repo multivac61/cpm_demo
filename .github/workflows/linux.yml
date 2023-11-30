@@ -1,74 +1,13 @@
----
-name: Linux
-
+name: Run NixOS Tests and other VMs on GitHub Actions.
 on:
-  push:
-    branches:
-      - main
-      - develop
   pull_request:
-    branches:
-      - main
-      - develop
   workflow_dispatch:
-
-env:
-  CTEST_OUTPUT_ON_FAILURE: 1
-  SCCACHE_VERSION: 0.6.0
-  SCCACHE_BUCKET: ${{ secrets.AWS_S3_BUCKET_NAME }}
-  SCCACHE_REGION: auto
-  SCCACHE_GHA_ENABLED: true
-  SCCACHE_ENDPOINT: https://${{ secrets.AWS_ENDPOINT }}
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
-
+  push:
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Caching CPM CMake dependencies
-        uses: tespkg/actions-cache@v1
-        with:
-          path: '**/cpm_modules'
-          key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
-          bucket: ${{ secrets.AWS_S3_BUCKET_NAME }}
-          accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          endpoint: ${{ secrets.AWS_ENDPOINT }}
-
-      - name: Update dependencies for JUCE
-        run: |
-          sudo apt update
-          sudo apt install libasound2-dev libjack-jackd2-dev \
-              ladspa-sdk \
-              libfreetype6-dev \
-              libx11-dev libxcomposite-dev libxcursor-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev \
-              libwebkit2gtk-4.0-dev \
-              libglu1-mesa-dev mesa-common-dev \
-              ninja-build
-
-      - name: Install sccache
-        run: |
-          wget https://github.com/mozilla/sccache/releases/download/v${{ env.SCCACHE_VERSION }}/sccache-v${{ env.SCCACHE_VERSION }}-x86_64-unknown-linux-musl.tar.gz
-          tar -xvf sccache-v${{ env.SCCACHE_VERSION }}-x86_64-unknown-linux-musl.tar.gz
-          echo "$PWD/sccache-v${{ env.SCCACHE_VERSION }}-x86_64-unknown-linux-musl" >> $GITHUB_PATH
-
-      - name: Configure
-        run: |
-          cmake -B build -G Ninja -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
-
-      - name: Build
-        run: |
-          cmake --build build
-
-      - name: Test
-        run: |
-          ctest --test-dir build
-
-      - name: Show sccache stats
-        run: |
-          sccache -s
+      - uses: actions/checkout@v4.1.1
+      - uses: DeterminateSystems/nix-installer-action@v8
+      - uses: DeterminateSystems/magic-nix-cache-action@v2
+      - run: nix build -L

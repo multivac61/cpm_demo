@@ -12,6 +12,7 @@
 , juce
 , lld
 , darwin
+, eigen
 }:
 let
   myJuce = juce.overrideAttrs rec {
@@ -46,6 +47,7 @@ stdenv.mkDerivation {
   '';
 
   buildInputs = [
+    eigen
     range-v3
     fmt
     microsoft-gsl
