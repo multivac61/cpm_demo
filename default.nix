@@ -5,10 +5,12 @@
 , pkg-config
 , range-v3
 , fmt
+, boost-sml
 , eigen
 , microsoft-gsl
 , pkgs
 , ut ? pkgs.callPackage ./nix/ut.nix { }
+, etl ? pkgs.callPackage ./nix/etl.nix { }
 , juce
 , lld
 , darwin
@@ -49,9 +51,11 @@ stdenv.mkDerivation {
     eigen
     range-v3
     fmt
+    boost-sml
     microsoft-gsl
     eigen
     ut
+    etl
     myJuce
   ] ++ lib.optionals stdenv.isDarwin [ darwin.apple_sdk.frameworks.Cocoa ];
 
