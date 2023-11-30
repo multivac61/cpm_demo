@@ -12,7 +12,6 @@
 , juce
 , lld
 , darwin
-, eigen
 }:
 let
   myJuce = juce.overrideAttrs rec {
