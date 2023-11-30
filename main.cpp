@@ -90,7 +90,8 @@ int main() {
     Eigen::Matrix3i m;
     m << 1, 2, 3, 4, 5, 6, 7, 8, 9;
 
-    expect(eq(m(3, 3), 9));
+    expect(eq(m(0, 0), 1));
+    expect(eq(m(2, 2), 9));
   };
 
   using namespace sml;
