@@ -13,8 +13,9 @@ find_package(ut REQUIRED CONFIG)
 find_package(etl REQUIRED CONFIG)
 find_package(sml REQUIRED CONFIG)
 find_package(range-v3 REQUIRED CONFIG)
+find_package(Microsoft.GSL REQUIRED CONFIG)
 
-target_link_libraries(main range-v3::range-v3 sml::sml etl::etl fmt::fmt Boost::ut juce::juce_core juce::juce_recommended_config_flags juce::juce_recommended_lto_flags juce::juce_recommended_warning_flags Eigen3::Eigen)
+target_link_libraries(main Microsoft.GSL::GSL range-v3::range-v3 sml::sml etl::etl fmt::fmt Boost::ut juce::juce_core juce::juce_recommended_config_flags juce::juce_recommended_lto_flags juce::juce_recommended_warning_flags Eigen3::Eigen)
 
 target_compile_definitions(main PRIVATE JUCE_USE_CURL=0 JUCE_WEB_BROWSER=0)
 

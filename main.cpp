@@ -5,6 +5,7 @@
 #include <boost/sml.hpp>
 #include <boost/ut.hpp>
 #include <fmt/format.h>
+#include <gsl/span>
 #include <juce_core/juce_core.h>
 #include <numeric>
 #include <range/v3/numeric/accumulate.hpp>
@@ -122,5 +123,11 @@ int main() {
 
     expect(eq(v1.at(0), 0));
     expect(eq(v2.at(0), 10));
+  };
+
+  "gsl"_test = [] {
+    const std::array a = {1, 2, 4, 5};
+    const auto s = gsl::make_span(a);
+    expect(eq(a.size(), s.size()));
   };
 }
