@@ -15,7 +15,8 @@ jobs:
           path: juce-conan
 
       - run: pip3 install conan --upgrade
-      - run: mkdir -p ${{ github.workspace }}/.conan/profiles
+      - run: |
+          mkdir -p ${{ github.workspace }}/.conan/profiles
           echo "[settings]
           arch=x86_64
           build_type=Release
