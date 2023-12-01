@@ -1,74 +1,21 @@
----
-name: Windows
+name: Windows. Us
 
 on:
-  push:
-    branches:
-      - main
-      - develop
   pull_request:
-    branches:
-      - main
-      - develop
   workflow_dispatch:
-
-env:
-  CTEST_OUTPUT_ON_FAILURE: 1
-  SCCACHE_VERSION: 0.6.0
-  SCCACHE_BUCKET: ${{ secrets.AWS_S3_BUCKET_NAME }}
-  SCCACHE_REGION: auto
-  SCCACHE_GHA_ENABLED: true
-  SCCACHE_ENDPOINT: https://${{ secrets.AWS_ENDPOINT }}
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
-  NINJA_VERSION: 1.11.1
-
+  push:
 jobs:
-  build:
+  run:
     runs-on: windows-latest
-
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Caching CPM CMake dependencies
-        uses: tespkg/actions-cache@v1
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          path: '**/cpm_modules'
-          key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
-          bucket: ${{ secrets.AWS_S3_BUCKET_NAME }}
-          accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          endpoint: ${{ secrets.AWS_ENDPOINT }}
+          repository: vvvar/juce-conan
+          path: juce-conan
 
-      - name: Download and install sccache
-        run: |
-          Invoke-WebRequest -URI https://github.com/mozilla/sccache/releases/download/v${{ env.SCCACHE_VERSION }}/sccache-v${{ env.SCCACHE_VERSION }}-x86_64-pc-windows-msvc.zip -OutFile sccache-v${{ env.SCCACHE_VERSION }}-x86_64-pc-windows-msvc.zip
-          Expand-Archive sccache-v${{ env.SCCACHE_VERSION }}-x86_64-pc-windows-msvc.zip
-          Add-Content $env:GITHUB_PATH "$PWD/sccache-v${{ env.SCCACHE_VERSION }}-x86_64-pc-windows-msvc"
-
-      - name: Download and install ninja-build
-        run: |
-          Invoke-WebRequest -URI https://github.com/ninja-build/ninja/releases/download/v${{ env.NINJA_VERSION }}/ninja-win.zip -OutFile ninja-win.zip
-          Expand-Archive ninja-win.zip
-          Add-Content $env:GITHUB_PATH "$PWD/ninja-win"
-
-      - name: Setup MSVC on Windows
-        run: |
-          Invoke-WebRequest -URI https://aka.ms/vs/17/release/vs_BuildTools.exe -OutFile vs_BuildTools.exe
-          ./vs_BuildTools.exe
-
-      - name: configure
-        run: |
-          cmake -B build -G Ninja -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Debug -DBOOST_UT_ENABLE_RUN_AFTER_BUILD=NO -DBOOST_UT_DISABLE_MODULE=ON -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl
-
-      - name: build
-        run: cmake --build build
-
-      - name: Test
-        run: |
-          ctest --test-dir build -C Debug
-
-      - name: Show sccache stats
-        run: |
-          sccache -s
+      - run: pip3 install conan --upgrade
+      - run: conan profile detect
+      - run: conan create juce-conan
+      - run: conan install --build=missing .
+      - run: conan build .

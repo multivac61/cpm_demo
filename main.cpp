@@ -4,8 +4,6 @@
 #include <Eigen/Dense>
 #include <boost/sml.hpp>
 #include <boost/ut.hpp>
-#include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Dense>
 #include <fmt/format.h>
 #include <juce_core/juce_core.h>
 #include <numeric>

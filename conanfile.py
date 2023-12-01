@@ -49,7 +49,9 @@ class MyProject(ConanFile):
         "boost-ext-ut/2.0.0",
         "range-v3/0.12.0",
         "eigen/3.4.0",
+        "etl/20.38.6",
         "ms-gsl/4.0.0",
+        "sml/1.1.9",
         "juce/7.0.5@juce/release"
     ]
     name = "MyPlugin"
