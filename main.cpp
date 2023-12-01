@@ -40,18 +40,19 @@ constexpr auto is_valid = [](const auto &event) { return event.valid; };
 constexpr auto send_fin = [](sender &s) { s.send(fin{0}); };
 constexpr auto send_ack = [](const auto &event, sender &s) { s.send(event); };
 
+class established;
+class fin_wait_1;
+class fin_wait_2;
+class timed_wait;
+
 struct tcp_release {
   auto operator()() const {
     using namespace sml;
-    /**
-     * Initial state: *initial_state
-     * Transition DSL: src_state + event [ guard ] / action = dst_state
-     */
     return make_transition_table(
-        *"established"_s + event<release> / send_fin = "fin wait 1"_s,
-        "fin wait 1"_s + event<ack>[is_valid] = "fin wait 2"_s,
-        "fin wait 2"_s + event<fin>[is_valid] / send_ack = "timed wait"_s,
-        "timed wait"_s + event<timeout> = X);
+        *state<established> + event<release> / send_fin = state<fin_wait_1>,
+        state<fin_wait_1> + event<ack>[is_valid] = state<fin_wait_2>,
+        state<fin_wait_2> + event<fin>[is_valid] / send_ack = state<timed_wait>,
+        state<timed_wait> + event<timeout> = X);
   }
 };
 
@@ -97,16 +98,16 @@ int main() {
   "sml"_test = [] {
     sender s{};
     sm<tcp_release> sm{s};
-    expect(sm.is("established"_s));
+    expect(sm.is(state<established>));
 
     sm.process_event(release{});
-    expect(sm.is("fin wait 1"_s));
+    expect(sm.is(state<fin_wait_1>));
 
     sm.process_event(ack{true});
-    expect(sm.is("fin wait 2"_s));
+    expect(sm.is(state<fin_wait_2>));
 
     sm.process_event(fin{42, true});
-    expect(sm.is("timed wait"_s));
+    expect(sm.is(state<timed_wait>));
 
     sm.process_event(timeout{});
     expect(sm.is(X));
