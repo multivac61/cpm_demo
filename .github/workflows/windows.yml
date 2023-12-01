@@ -1,4 +1,4 @@
-name: Windows. Us
+name: Windows. Use Conan to install, configure and build.
 
 on:
   pull_request:
@@ -15,7 +15,18 @@ jobs:
           path: juce-conan
 
       - run: pip3 install conan --upgrade
+      - run: |
+          echo -e "[settings]\n\
+          arch=x86_64\n\
+          build_type=Release\n\
+          compiler=msvc\n\
+          compiler.cppstd=20\n\
+          compiler.runtime=dynamic\n\
+          compiler.version=193\n\
+          os=Windows" > ${{ github.workspace }}/.conan/profiles/default
       - run: conan profile detect
       - run: conan create juce-conan
       - run: conan install --build=missing .
       - run: conan build .
+      - run: ./build/Release/main
+      - run: .\build\Release\main.exe
