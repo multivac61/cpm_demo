@@ -52,7 +52,6 @@ class MyProject(ConanFile):
         "etl/20.38.6",
         "ms-gsl/4.0.0",
         "sml/1.1.9",
-        "ms-gsl/4.0.0",
         "juce/7.0.5@juce/release"
     ]
     name = "MyPlugin"
