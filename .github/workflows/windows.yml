@@ -15,10 +15,9 @@ jobs:
           path: juce-conan
       - run: pip3 install conan --upgrade
       - run: conan profile detect
-      - name: Update Conan profile for C++20 Standard
-        run: |
-          $profilePath = "${{ github.workspace }}\.conan\profiles\default"
-          (Get-Content $profilePath).replace('compiler.cppstd=auto', 'compiler.cppstd=20') | Set-Content $profilePath
+      - run: |
+          $profilePath = "C:\Users\runneradmin\.conan2\profiles\default"
+          (Get-Content $profilePath).replace('compiler.cppstd=14', 'compiler.cppstd=20') | Set-Content $profilePath
         shell: pwsh
       - run: conan create juce-conan
       - run: conan install --build=missing .
