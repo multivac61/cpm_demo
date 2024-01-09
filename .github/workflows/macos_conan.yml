@@ -1,5 +1,4 @@
-name: Windows. Use Conan to install, configure and build.
-
+name: MacOS. Use Conan to install, configure and build.
 on:
   pull_request:
   workflow_dispatch:
@@ -14,8 +13,7 @@ jobs:
           repository: vvvar/juce-conan
           path: juce-conan
       - run: pip3 install conan --upgrade
-      - run: conan profile detect
-      - run: conan create juce-conan
-      - run: conan install --build=missing . -profile conanprofile_mac
+      - run: conan create juce-conan --profile conan/mac
+      - run: conan install --profile conan/mac --build=missing .
       - run: conan build .
       - run: ./build/Release/main
