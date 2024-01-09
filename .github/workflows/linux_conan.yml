@@ -6,7 +6,7 @@ on:
   push:
 jobs:
   run:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
@@ -14,9 +14,7 @@ jobs:
           repository: vvvar/juce-conan
           path: juce-conan
       - run: pip3 install conan --upgrade
-      - run: conan profile detect
       - run: conan create juce-conan
-      - run: conan install --build=missing . -profile conanprofile_win
+      - run: conan install --build=missing . -profile conanprofile_linux
       - run: conan build .
-      - run: .\build\Release\main
-        shell: pwsh
+      - run: ./build/Release/main
