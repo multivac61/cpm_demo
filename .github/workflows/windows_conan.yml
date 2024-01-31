@@ -13,8 +13,8 @@ jobs:
           repository: vvvar/juce-conan
           path: juce-conan
       - run: pip3 install conan --upgrade
-      - run: conan create juce-conan --profile:all conan/win
+      - run: conan create --profile:all conan/win juce-conan
       - run: conan install --profile:all conan/win --build=missing .
-      - run: conan build .
+      - run: conan build --profile:all conan/win .
       - run: .\build\Release\main
         shell: pwsh
