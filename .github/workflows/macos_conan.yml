@@ -5,14 +5,14 @@ on:
   push:
 jobs:
   run:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
         with:
           repository: vvvar/juce-conan
       - run: pip3 install conan --upgrade
-      # - run: conan profile detect
-      - run: conan install --profile:all conan/mac --build=missing .
-      - run: conan build --profile:all conan/mac .
+      - run: conan profile detect
+      - run: conan install conan/mac --build=missing .
+      - run: conan build conan/mac .
       - run: ./build/Release/main
