@@ -1,11 +1,12 @@
 name: MacOS. Use Conan to install, configure and build.
+
 on:
   pull_request:
   workflow_dispatch:
   push:
 jobs:
   run:
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       # - uses: actions/checkout@v4
@@ -13,8 +14,7 @@ jobs:
       #     repository: vvvar/juce-conan
       #     path: juce-conan
       - run: pip3 install conan --upgrade
-      - run: conan install --profile conan/mac --build=missing . && conan build .
-      # - run: conan create juce-conan --profile:build conan/mac
-      # - run: conan install --profile conan/mac --build=missing .
-      # - run: conan build .
+      - run: conan profile detect
+      - run: conan install --profile conan/mac --build=missing .
+      - run: conan build .
       - run: ./build/Release/main
