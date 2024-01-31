@@ -13,6 +13,6 @@ jobs:
           repository: vvvar/juce-conan
       - run: pip3 install conan --upgrade
       - run: conan profile detect
-      - run: conan install conan/mac --build=missing .
-      - run: conan build conan/mac .
+      - run: conan install --build=missing .
+      - run: conan build .
       - run: ./build/Release/main
