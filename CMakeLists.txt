@@ -6,14 +6,9 @@ project(cpm-demo)
 
 add_executable(main main.cpp)
 
-find_package(fmt REQUIRED CONFIG)
-find_package(JUCE REQUIRED)
-find_package(Eigen3 3.3 REQUIRED CONFIG)
-find_package(ut REQUIRED CONFIG)
-find_package(etl REQUIRED CONFIG)
-find_package(sml REQUIRED CONFIG)
-find_package(range-v3 REQUIRED CONFIG)
-find_package(Microsoft.GSL REQUIRED CONFIG)
+foreach(pkg fmt JUCE ut etl sml range-v3 Microsoft.GSL Eigen3)
+  find_package(${pkg} REQUIRED CONFIG)
+endforeach()
 
 target_link_libraries(main Microsoft.GSL::GSL range-v3::range-v3 sml::sml etl::etl fmt::fmt Boost::ut juce::juce_core juce::juce_recommended_config_flags juce::juce_recommended_lto_flags juce::juce_recommended_warning_flags Eigen3::Eigen)
 
