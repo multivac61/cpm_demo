@@ -11,6 +11,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: vvvar/juce-conan
+          path: juce-conan
       - run: pip3 install conan --upgrade
       - run: conan profile detect
       - run: conan install --build=missing .
