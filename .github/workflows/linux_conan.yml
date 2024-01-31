@@ -13,7 +13,6 @@ jobs:
           repository: vvvar/juce-conan
           path: juce-conan
       - run: pip3 install conan --upgrade
-      - run: conan profile detect
       - run: conan create --profile:all conan/linux juce-conan
       - run: conan install --profile:all conan/linux --build=missing .
       - run: conan build --profile:all conan/linux .
